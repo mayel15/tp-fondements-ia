@@ -1,5 +1,6 @@
 public class Joueur {
     String nom;
+    Pion.COULEUR couleur;
 
     public Joueur(String nom) {
         this.nom = nom;
