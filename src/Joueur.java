@@ -2,6 +2,7 @@ public class Joueur {
     private String nom;
     private Pion.COULEUR couleur;
 
+
     public Joueur(String nom, Pion.COULEUR couleur) {
         this.nom = nom;
         this.couleur = couleur;
