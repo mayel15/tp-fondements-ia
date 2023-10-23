@@ -21,10 +21,6 @@ public class Jeu {
         while (true) {
             jouerTour();
 
-<<<<<<< HEAD
-            //System.out.println(possibiliteJouer());
-=======
-
             if(!plusDePossibilites(joueurActuel))
             {
                 jouer();
@@ -32,7 +28,7 @@ public class Jeu {
                 checkWin();
                 break;
             }
->>>>>>> c072124e755217f09800abdf7df82249f7950a5b
+
             // Si toutes les cases sont remplies, déterminez le gagnant
             //System.out.println(possibiliteJouer());
             if (plateauEstPlein() || possibiliteJouer()==false) {
@@ -151,45 +147,6 @@ public class Jeu {
             }
         }
         return true; // Aucune possibilité de placement.
-    }
-
-        boolean placementValide = false;
-
-        // Huit directions possibles autour du pion
-        int[] directionsLigne = { -1, -1, -1, 0, 0, 1, 1, 1 };
-        int[] directionsColonne = { -1, 0, 1, -1, 1, -1, 0, 1 };
-
-        for (int i = 0; i < directionsLigne.length; i++) {
-            int dirLigne = directionsLigne[i];
-            int dirColonne = directionsColonne[i];
-
-            int x = ligne + dirLigne;
-            int y = colonne + dirColonne;
-
-            boolean pionsAChanger = false;
-            ArrayList<Pion> pionsAChangerList = new ArrayList<>(); // Pour stocker les pions adverses à changer
-
-            while (x >= 0 && x < plateau.getGrille().size() && y >= 0 && y < plateau.getGrille().get(0).size()) {
-                Pion adjacent = plateau.getGrille().get(x).get(y);
-
-                if (adjacent.couleur == joueur) {
-                    if (pionsAChanger) {
-                        placementValide = true;
-                    }
-                    break;
-                } else if (adjacent.couleur == Pion.COULEUR.neutre) {
-                    break;
-                } else {
-                    pionsAChanger = true;
-                    pionsAChangerList.add(adjacent); // Ajouter les pions adverses à la liste
-                }
-
-                x += dirLigne;
-                y += dirColonne;
-            }
-        }
-
-        return placementValide;
     }
 
     public boolean peutJouer(int ligne, int colonne, Pion.COULEUR joueur) {
