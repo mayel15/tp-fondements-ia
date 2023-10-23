@@ -6,13 +6,13 @@ public class Pion {
         neutre
     }
     COULEUR couleur;
-    int posX;
-    int posY;
+    int nbLigne;
+    int nbColonne;
 
     public Pion(COULEUR couleur, int posX, int posY) {
         this.couleur = couleur;
-        this.posX = posX;
-        this.posY = posY;
+        this.nbLigne = posX;
+        this.nbColonne = posY;
     }
 
     void change_color(COULEUR new_color)
@@ -28,20 +28,20 @@ public class Pion {
         this.couleur = couleur;
     }
 
-    public int getPosX() {
-        return posX;
+    public int getNbLigne() {
+        return nbLigne;
     }
 
-    public void setPosX(int posX) {
-        this.posX = posX;
+    public void setNbLigne(int nbLigne) {
+        this.nbLigne = nbLigne;
     }
 
-    public int getPosY() {
-        return posY;
+    public int getNbColonne() {
+        return nbColonne;
     }
 
-    public void setPosY(int posY) {
-        this.posY = posY;
+    public void setNbColonne(int nbColonne) {
+        this.nbColonne = nbColonne;
     }
 
     @Override
