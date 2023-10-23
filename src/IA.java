@@ -123,6 +123,42 @@ public class IA {
 
     Retourner Faux
 */
+    /*
 
+    int fonction minimax (int depth)
+{
+   if (game over or depth = 0)
+      return winning score or eval();
 
+   int bestScore;
+   move bestMove;
+
+   if (nœud == MAX) { //=Programme
+      bestScore = -INFINITY;
+      for (each possible move m) {
+         make move m;
+         int score = minimax (depth - 1)
+         unmake move m;
+         if (score > bestScore) {
+            bestScore = score;
+            bestMove = m ;
+         }
+      }
+   }
+   else { //type MIN = adversaire
+      bestScore = +INFINITY;
+      for (each possible move m) {
+         make move m;
+         int score = minimax (depth - 1)
+         unmake move m;
+         if (score < bestScore) {
+            bestScore = score;
+            bestMove = m ;
+         }
+      }
+   }
+   return bestscore ;
+}
+
+     */
 }
