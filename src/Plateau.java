@@ -1,5 +1,5 @@
 import java.util.ArrayList;
-import java.util.List;
+
 
 public class Plateau {
 
@@ -23,7 +23,9 @@ public class Plateau {
         this.grille.get(centre+1).get(centre+1).setCouleur(Pion.COULEUR.noir);
     }
 
-
+    public ArrayList<ArrayList<Pion>> getGrille() {
+        return grille;
+    }
 
     @Override
     public String toString() {
