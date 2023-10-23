@@ -20,9 +20,10 @@ public class Jeu {
         while (true) {
             jouerTour();
 
-            // Vérifier si le joueur actuel a gagné
-            if (checkWin(joueurActuel.getCouleur())) {
-                System.out.println(joueurActuel.getNom() + " a gagné !");
+            // Si toutes les cases sont remplies, déterminez le gagnant
+            if (plateauEstPlein()) {
+                System.out.println(plateau);
+                checkWin();
                 break;
             }
 
@@ -30,6 +31,7 @@ public class Jeu {
             joueurActuel = (joueurActuel == joueurNoir) ? joueurBlanc : joueurNoir;
         }
     }
+
 
     public void jouerTour() {
         System.out.println(plateau);
@@ -102,15 +104,41 @@ public class Jeu {
         plateau.getGrille().get(ligne).get(colonne).couleur = joueur;
     }
 
-    public boolean checkWin(Pion.COULEUR joueur) {
+    public boolean plateauEstPlein() {
+        // Vérifier si le plateau est rempli (aucune case vide)
         for (int ligne = 0; ligne < plateau.getGrille().size(); ligne++) {
             for (int colonne = 0; colonne < plateau.getGrille().get(0).size(); colonne++) {
-                if (plateau.getGrille().get(ligne).get(colonne).couleur == joueur) {
-                    return false; // Le joueur a au moins un pion sur le plateau, le jeu continue.
+                if (plateau.getGrille().get(ligne).get(colonne).couleur == Pion.COULEUR.neutre) {
+                    return false; // Il y a encore au moins une case vide.
                 }
             }
         }
-        return true; // Le joueur n'a pas de pions sur le plateau, il a perdu.
+        return true; // Le plateau est rempli.
+    }
+
+
+    public void checkWin() {
+        int pionsNoirs = 0;
+        int pionsBlancs = 0;
+
+        for (int ligne = 0; ligne < plateau.getGrille().size(); ligne++) {
+            for (int colonne = 0; colonne < plateau.getGrille().get(0).size(); colonne++) {
+                Pion pion = plateau.getGrille().get(ligne).get(colonne);
+                if (pion.couleur == Pion.COULEUR.noir) {
+                    pionsNoirs++;
+                } else if (pion.couleur == Pion.COULEUR.blanc) {
+                    pionsBlancs++;
+                }
+            }
+        }
+
+        if (pionsNoirs > pionsBlancs) {
+            System.out.println("Joueur noir a gagné : "+pionsNoirs+" à "+pionsBlancs );
+        } else if (pionsBlancs > pionsNoirs) {
+            System.out.println("Joueur blanc a gagné : "+pionsBlancs+" à "+pionsNoirs );
+        } else {
+            System.out.println("Match nul : "+pionsNoirs+" Partout !" );
+        }
     }
 
 
