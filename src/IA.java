@@ -1,5 +1,5 @@
 public class IA {
-    private int[][] grilleEvaluation;
+    /*private int[][] grilleEvaluation;
     public IA {
         this.initializeEvaluationGrid();
     }
@@ -73,7 +73,7 @@ public class IA {
             }
         }
         return true;
-    }
+    }*/
 
 
 /*

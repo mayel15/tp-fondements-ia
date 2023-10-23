@@ -5,7 +5,7 @@ public class Main  {
     public static void main(String[] args) {
         // Exemple d'utilisation
 
-        Plateau plateau = new Plateau(10);
+        Plateau plateau = new Plateau(4);
         System.out.println(plateau);
     }
 }
