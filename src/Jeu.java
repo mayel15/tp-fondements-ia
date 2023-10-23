@@ -1,3 +1,4 @@
+import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Scanner;
 
@@ -20,8 +21,10 @@ public class Jeu {
         while (true) {
             jouerTour();
 
+            //System.out.println(possibiliteJouer());
             // Si toutes les cases sont remplies, déterminez le gagnant
-            if (plateauEstPlein()) {
+            //System.out.println(possibiliteJouer());
+            if (plateauEstPlein() || possibiliteJouer()==false) {
                 System.out.println(plateau);
                 checkWin();
                 break;
@@ -98,7 +101,114 @@ public class Jeu {
         return placementValide;
     }
 
+    public boolean checkPossibilite2(int ligne, int colonne, Pion.COULEUR joueur) {
+        Pion pion = plateau.getGrille().get(ligne).get(colonne);
+        if (pion.couleur != Pion.COULEUR.neutre) {
+            return false; // La case n'est pas vide, le placement est invalide.
+        }
 
+        boolean placementValide = false;
+
+        // Huit directions possibles autour du pion
+        int[] directionsLigne = { -1, -1, -1, 0, 0, 1, 1, 1 };
+        int[] directionsColonne = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+        for (int i = 0; i < directionsLigne.length; i++) {
+            int dirLigne = directionsLigne[i];
+            int dirColonne = directionsColonne[i];
+
+            int x = ligne + dirLigne;
+            int y = colonne + dirColonne;
+
+            boolean pionsAChanger = false;
+            ArrayList<Pion> pionsAChangerList = new ArrayList<>(); // Pour stocker les pions adverses à changer
+
+            while (x >= 0 && x < plateau.getGrille().size() && y >= 0 && y < plateau.getGrille().get(0).size()) {
+                Pion adjacent = plateau.getGrille().get(x).get(y);
+
+                if (adjacent.couleur == joueur) {
+                    if (pionsAChanger) {
+                        placementValide = true;
+                    }
+                    break;
+                } else if (adjacent.couleur == Pion.COULEUR.neutre) {
+                    break;
+                } else {
+                    pionsAChanger = true;
+                    pionsAChangerList.add(adjacent); // Ajouter les pions adverses à la liste
+                }
+
+                x += dirLigne;
+                y += dirColonne;
+            }
+        }
+
+        return placementValide;
+    }
+
+    public boolean peutJouer(int ligne, int colonne, Pion.COULEUR joueur) {
+        Pion pion = plateau.getGrille().get(ligne).get(colonne);
+        if (pion.couleur != Pion.COULEUR.neutre) {
+            return false; // La case n'est pas vide, le placement est invalide.
+        }
+
+        // Huit directions possibles autour du pion
+        int[] directionsLigne = { -1, -1, -1, 0, 0, 1, 1, 1 };
+        int[] directionsColonne = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+        for (int i = 0; i < directionsLigne.length; i++) {
+            int dirLigne = directionsLigne[i];
+            int dirColonne = directionsColonne[i];
+
+            int x = ligne + dirLigne;
+            int y = colonne + dirColonne;
+
+            boolean pionsAChanger = false;
+            ArrayList<Pion> pionsAChangerList = new ArrayList<>(); // Pour stocker les pions adverses à changer
+
+            while (x >= 0 && x < plateau.getGrille().size() && y >= 0 && y < plateau.getGrille().get(0).size()) {
+                Pion adjacent = plateau.getGrille().get(x).get(y);
+
+                if (adjacent.couleur == joueur) {
+                    if (pionsAChanger) {
+                        return true; // Le joueur peut jouer dans cette direction
+                    }
+                    break;
+                } else if (adjacent.couleur == Pion.COULEUR.neutre) {
+                    break;
+                } else {
+                    pionsAChanger = true;
+                    pionsAChangerList.add(adjacent); // Ajouter les pions adverses à la liste
+                }
+
+                x += dirLigne;
+                y += dirColonne;
+            }
+        }
+
+        return false; // Le joueur ne peut pas jouer dans aucune direction
+    }
+
+
+
+    public boolean possibiliteJouer() {
+        boolean peutEtreJoue = false;
+        for (int i = 0; i < plateau.getGrille().size(); i++) {
+            for (int j = 0; j < plateau.getGrille().size(); j++) {
+                System.out.println(i);
+                System.out.println(j);
+                if (checkPossibilite2(i, j, joueurActuel.getCouleur())) {
+                    /*System.out.println(i);
+                    System.out.println(j);*/
+                    peutEtreJoue = true;
+                    System.out.println(peutEtreJoue);
+                    break;
+                }
+            }
+            if(peutEtreJoue) break;
+        }
+        return peutEtreJoue;
+    }
 
     public void placerPion(int ligne, int colonne, Pion.COULEUR joueur) {
         plateau.getGrille().get(ligne).get(colonne).couleur = joueur;
@@ -109,11 +219,11 @@ public class Jeu {
         for (int ligne = 0; ligne < plateau.getGrille().size(); ligne++) {
             for (int colonne = 0; colonne < plateau.getGrille().get(0).size(); colonne++) {
                 if (plateau.getGrille().get(ligne).get(colonne).couleur == Pion.COULEUR.neutre) {
-                    return false; // Il y a encore au moins une case vide.
+                    return false;
                 }
             }
         }
-        return true; // Le plateau est rempli.
+        return true;
     }
 
 
@@ -140,6 +250,5 @@ public class Jeu {
             System.out.println("Match nul : "+pionsNoirs+" Partout !" );
         }
     }
-
 
 }
