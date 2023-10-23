@@ -20,6 +20,14 @@ public class Jeu {
         while (true) {
             jouerTour();
 
+
+            if(!plusDePossibilites(joueurActuel))
+            {
+                jouer();
+                System.out.println(plateau);
+                checkWin();
+                break;
+            }
             // Si toutes les cases sont remplies, déterminez le gagnant
             if (plateauEstPlein()) {
                 System.out.println(plateau);
@@ -97,6 +105,48 @@ public class Jeu {
 
         return placementValide;
     }
+
+    public boolean checkPossibilite2(int ligne, int colonne, Pion.COULEUR joueur) {
+        // Huit directions possibles autour du pion
+        int[] directionsLigne = { -1, -1, -1, 0, 0, 1, 1, 1 };
+        int[] directionsColonne = { -1, 0, 1, -1, 1, -1, 0, 1 };
+
+        for (int i = 0; i < directionsLigne.length; i++) {
+            int dirLigne = directionsLigne[i];
+            int dirColonne = directionsColonne[i];
+
+            int x = ligne + dirLigne;
+            int y = colonne + dirColonne;
+
+            while (x >= 0 && x < plateau.getGrille().size() && y >= 0 && y < plateau.getGrille().get(0).size()) {
+                Pion adjacent = plateau.getGrille().get(x).get(y);
+
+                if (adjacent.couleur == joueur) {
+                    // Le placement est valide dans cette direction
+                    return true;
+                } else if (adjacent.couleur == Pion.COULEUR.neutre) {
+                    break;
+                }
+
+                x += dirLigne;
+                y += dirColonne;
+            }
+        }
+
+        return false; // Aucune direction de placement valide
+    }
+
+
+    public boolean plusDePossibilites(Joueur joueur) {
+        // Parcourez le plateau pour vérifier s'il reste des possibilités de placement pour le joueur actuel.
+        for (int ligne = 0; ligne < plateau.getGrille().size(); ligne++) {
+            for (int colonne = 0; colonne < plateau.getGrille().get(0).size(); colonne++) {
+                return checkPossibilite2(ligne,colonne,joueur.getCouleur());
+            }
+        }
+        return true; // Aucune possibilité de placement.
+    }
+
 
 
 
