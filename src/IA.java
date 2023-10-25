@@ -1,6 +1,20 @@
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 public class IA {
-    /*private int[][] grilleEvaluation;
-    public IA {
+    private String nom;
+    private Pion.COULEUR couleur;
+    private int profondeurMax;
+
+    private int[][] grilleEvaluation;
+
+
+    public IA(String nom, Pion.COULEUR couleur, int profondeurMax) {
+        this.nom = nom;
+        this.couleur = couleur;
+        this.profondeurMax = profondeurMax;
         this.initializeEvaluationGrid();
     }
 
@@ -16,149 +30,124 @@ public class IA {
                 {500, -150, 30, 10, 10, 30, -150, 500}
         };
     }
-    public int minmax(Plateau statePlateau, int depth, Joueur joueur,Pion.COULEUR MAX, Pion.COULEUR MIN) {
-        if (depth == 0 || isTerminalNode(statePlateau)) {
-            return evaluate(statePlateau);
-        }
-        if(MAX)
-        return 0;
+
+    // permetr  de joueur le meilleur coup
+    public void jouerCoup(Plateau plateau) {
+        int[] meilleurCoup = minimax(plateau, profondeurMax, true);
+        System.out.println("Tour de l'IA : " + this.nom);
+        int ligne = meilleurCoup[0];
+        int colonne = meilleurCoup[1];
+        System.out.println(ligne);
+        System.out.println(colonne);
+
+        plateau.placerPion(ligne, colonne, couleur);
+
     }
 
-    // permet d'evaluer un coup
-    public int evaluate(Plateau statePlateau, Pion.COULEUR couleur){
-        int score = 0;
-        for (int i=0; i<statePlateau.grille.size(); i++){
-            for (int j=0; j<statePlateau.grille.size(); j++) {
-                // max pour noir &  min pour blanc
-                if (statePlateau.grille.get(i).get(j).couleur == couleur) {
-                    score = score + grilleEvaluation[i][j];
-                } else {
-                    score = score - grilleEvaluation[i][j];
+    // algorithme min max permettant de construire l'arbre des possibilités
+    private int[] minimax(Plateau plateau, int profondeur, boolean maximizingPlayer) {
+        if (profondeur == 0 || plateau.plateauEstPlein()) {
+            int score = evaluerPlateau(plateau);
+            return new int[]{score, -1, -1};
+        }
+
+        List<int[]> coupsPossibles = obtenirCoupsPossibles(plateau, couleur);
+
+        if (maximizingPlayer) {
+            int meilleurScore = Integer.MIN_VALUE;
+            int[] meilleurCoup = {-1, -1};
+
+            for (int[] coup : coupsPossibles) {
+                Plateau copiePlateau = plateau.clone();
+
+                if (copiePlateau.positionValide(coup[0], coup[1], couleur)) {
+                    copiePlateau.placerPion(coup[0], coup[1], couleur);
+
+                    int[] scoreCoup = minimax(copiePlateau, profondeur - 1, false);
+
+                    if (scoreCoup[0] > meilleurScore) {
+                        meilleurScore = scoreCoup[0];
+                        meilleurCoup[0] = coup[0];
+                        meilleurCoup[1] = coup[1];
+                    }
+                }
+            }
+
+            return meilleurCoup;
+        } else {
+            int pireScore = Integer.MAX_VALUE;
+            int[] pireCoup = {-1, -1};
+
+            for (int[] coup : coupsPossibles) {
+                Plateau copiePlateau = plateau.clone();
+                Pion.COULEUR adversaire = (couleur == Pion.COULEUR.noir) ? Pion.COULEUR.blanc : Pion.COULEUR.noir;
+
+                if (copiePlateau.positionValide(coup[0], coup[1], adversaire)) {
+                    copiePlateau.placerPion(coup[0], coup[1], adversaire);
+
+                    int[] scoreCoup = minimax(copiePlateau, profondeur - 1, true);
+
+                    if (scoreCoup[0] < pireScore) {
+                        pireScore = scoreCoup[0];
+                        pireCoup[0] = coup[0];
+                        pireCoup[1] = coup[1];
+                    }
+                }
+            }
+
+            return pireCoup;
+        }
+    }
+
+    // permet d'obtenir l'ensemble des coups possibles
+    private List<int[]> obtenirCoupsPossibles(Plateau plateau, Pion.COULEUR couleur) {
+        List<int[]> coupsPossibles = new ArrayList<>();
+        for (int ligne = 0; ligne < plateau.getGrille().size(); ligne++) {
+            for (int colonne = 0; colonne < plateau.getGrille().get(0).size(); colonne++) {
+                //System.out.println(couleur);
+                boolean positionValide = plateau.positionValide(ligne, colonne, couleur);
+                if (positionValide) {
+                    coupsPossibles.add(new int[]{ligne, colonne});
                 }
             }
         }
+        return coupsPossibles;
+    }
+
+    // fonction d'évaluation de l'algorithme minmax
+    private int evaluerPlateau(Plateau plateau) {
+        int score = 0;
+
+        for (int ligne = 0; ligne < plateau.getGrille().size(); ligne++) {
+            for (int colonne = 0; colonne < plateau.getGrille().get(0).size(); colonne++) {
+                Pion pion = plateau.getGrille().get(ligne).get(colonne);
+                int valeurCellule = grilleEvaluation[ligne][colonne];
+
+                if (pion.couleur == couleur) {
+                    score += valeurCellule;
+                } else if (pion.couleur != Pion.COULEUR.neutre) {
+                    score -= valeurCellule;
+                }
+            }
+        }
+
         return score;
     }
 
-    // retourne l'ensemble des etats possibles à partir d'un etat donné
-    public  Plateau[] generateStatePlateauPossibles(){
-        return new Plateau[] {new Plateau(6), new Plateau(6), new Plateau(6)};
+    public Pion.COULEUR getCouleur() {
+        return couleur;
     }
 
-    public Plateau meilleurCoup(Pion.COULEUR couleur){
-        Plateau meilleurPlateau = null;
-        int maxEval = 1000;
-        int eval = 0;
-        int depth = 6;
-        for (Plateau plateau : generateStatePlateauPossibles()) {
-            eval = minmax(plateau, depth-1 , couleur);
-            if(eval>maxEval) {
-                maxEval = eval;
-                meilleurPlateau = plateau;
-            }
-        }
-        return meilleurPlateau;
+    public String getNom() {
+        return nom;
     }
 
-    // permet de verifier s'il y'a un noeud terminal
-    public boolean isTerminalNode(Plateau statePlateau) {
-        // c'est terminal si la grille est pleine ou personne ne peut plus jouer
-        for (int i=0; i<statePlateau.grille.size(); i++){
-            for (int j=0; j<statePlateau.grille.size(); j++) {
-                // max pour noir &  min pour blanc
-                if (statePlateau.grille.get(i).get(j).couleur == Pion.COULEUR.neutre) {
-                    return false;
-                }
-
-            }
-        }
-        return true;
-    }*/
-
-
-/*
-    Fonction minimax(état, profondeur, joueur) :
-    Si profondeur == 0 ou estTerminalNode(état) :
-    Retourner evaluate(état)
-
-    Si joueur == MAX :
-    maxEval = -∞
-    Pour chaque coup dans generatePossibleStates(état, MAX) :
-    eval = minimax(coup, profondeur - 1, MIN)
-    maxEval = max(maxEval, eval)
-    Retourner maxEval
-
-    Sinon (joueur == MIN) :
-    minEval = +∞
-    Pour chaque coup dans generatePossibleStates(état, MIN) :
-    eval = minimax(coup, profondeur - 1, MAX)
-    minEval = min(minEval, eval)
-    Retourner minEval
-
-    Fonction evaluate(état) :
-    score = 0
-    Pour chaque case du plateau dans l'état :
-    Si la case est occupée par MAX :
-    score = score + valeurDeLaGrille[case]
-    Si la case est occupée par MIN :
-    score = score - valeurDeLaGrille[case]
-    Retourner score
-
-    Fonction meilleurCoup(état) :
-    meilleurCoup = null
-    maxEval = -∞
-    Pour chaque coup dans generatePossibleStates(état, MAX) :
-    eval = minimax(coup, profondeur - 1, MIN)
-    Si eval > maxEval :
-    maxEval = eval
-            meilleurCoup = coup
-    Retourner meilleurCoup
-
-    Fonction estTerminalNode(état) :
-    Si le plateau est rempli (plus aucune case vide) :
-        Retourner Vrai
-
-    Si aucun joueur ne peut jouer :
-        Retourner Vrai
-
-    Retourner Faux
-*/
-    /*
-
-    int fonction minimax (int depth)
-{
-   if (game over or depth = 0)
-      return winning score or eval();
-
-   int bestScore;
-   move bestMove;
-
-   if (nœud == MAX) { //=Programme
-      bestScore = -INFINITY;
-      for (each possible move m) {
-         make move m;
-         int score = minimax (depth - 1)
-         unmake move m;
-         if (score > bestScore) {
-            bestScore = score;
-            bestMove = m ;
-         }
-      }
-   }
-   else { //type MIN = adversaire
-      bestScore = +INFINITY;
-      for (each possible move m) {
-         make move m;
-         int score = minimax (depth - 1)
-         unmake move m;
-         if (score < bestScore) {
-            bestScore = score;
-            bestMove = m ;
-         }
-      }
-   }
-   return bestscore ;
-}
-
-     */
+    @Override
+    public String toString() {
+        return "IA{" +
+                "couleur=" + couleur +
+                ", profondeurMax=" + profondeurMax +
+                ", grilleEvaluation=" + Arrays.toString(grilleEvaluation) +
+                '}';
+    }
 }
