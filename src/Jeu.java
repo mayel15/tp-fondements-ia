@@ -28,14 +28,14 @@ public class Jeu {
                 checkWin();
                 break;
             }
-            // Si toutes les cases sont remplies, déterminez le gagnant
+            //Si toutes les cases sont remplies, déterminer le gagnant
             if (plateauEstPlein()) {
                 System.out.println(plateau);
                 checkWin();
                 break;
             }
 
-            // Passez au joueur suivant
+            //Passer au joueur suivant
             joueurActuel = (joueurActuel == joueurNoir) ? joueurBlanc : joueurNoir;
         }
     }

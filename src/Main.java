@@ -2,19 +2,20 @@ import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
-        int dimension = 4; // Vous pouvez ajuster la taille du plateau ici
 
-        // Créez le plateau avec la dimension spécifiée
+        //Créer le plateau avec la dimension spécifiée
+        int dimension = 4;
         Plateau plateau = new Plateau(dimension);
 
-        // Créez les joueurs
+        //Créer les joueurs
         Joueur joueurNoir = new Joueur("Joueur Noir", Pion.COULEUR.noir);
         Joueur joueurBlanc = new Joueur("Joueur Blanc", Pion.COULEUR.blanc);
 
-        // Créez le jeu
+
+        //Créer le jeu
         Jeu jeu = new Jeu(plateau, joueurNoir, joueurBlanc);
 
-        // Lancez le jeu
+        //Lancer le jeu
         jeu.jouer();
     }
 }
