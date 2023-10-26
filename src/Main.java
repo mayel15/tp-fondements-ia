@@ -3,12 +3,13 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
+
         // taille ou dimension du plateau
         int dimension = 4;
 
-        // Créez le plateau avec la dimension spécifiée
+        //Créer le plateau avec la dimension spécifiée
+        int dimension = 4;
         Plateau plateau = new Plateau(dimension);
-
 
         // Créez les joueurs et IA
         Joueur joueurNoir = new Joueur("Joueur Noir", Pion.COULEUR.noir);
@@ -52,7 +53,6 @@ public class Main {
             default:
                 jeu.IAvsIA();
         }
-
 
     }
 }
