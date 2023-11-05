@@ -63,5 +63,4 @@ public class Pion {
         }
         return "[" + couleurStr + "]";
     }
-
 }
