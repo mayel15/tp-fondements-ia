@@ -1,11 +1,20 @@
-import java.util.ArrayList;
+// ALMAJJO Alaaeddin & THIAM Pape
 
+import java.util.ArrayList;
 
 public class Plateau {
 
     ArrayList<ArrayList<Pion>> grille;
     public Plateau(int dimension)
     {
+        this.initialiserGrille(dimension);
+    }
+
+    public ArrayList<ArrayList<Pion>> getGrille() {
+        return grille;
+    }
+
+    public void initialiserGrille(int dimension) {
         // permet d'initialiser la grille qu'avec des pions neutres
         this.grille = new ArrayList<>();
         for (int i = 0; i < dimension; i++) {
@@ -24,13 +33,7 @@ public class Plateau {
         this.grille.get(centre+1).get(centre+1).setCouleur(Pion.COULEUR.noir);
     }
 
-    public ArrayList<ArrayList<Pion>> getGrille() {
-        return grille;
-    }
-
-    /*
-        permet de verifier si le plateau est plein ou pas
-     */
+    //permet de verifier si le plateau est plein ou pas
     public boolean plateauEstPlein() {
         for (int ligne = 0; ligne < grille.size(); ligne++) {
             for (int colonne = 0; colonne < grille.get(0).size(); colonne++) {
@@ -43,15 +46,16 @@ public class Plateau {
     }
 
     // permet de placer un pion sur le plateau après avoir checker la validité de la position
-    public void placerPion(int ligne, int colonne, Pion.COULEUR couleurPion) {
+    public String placerPion(int ligne, int colonne, Pion.COULEUR couleurPion) {
         if((positionValide(ligne, colonne, couleurPion)) && (changePionAdverse(ligne,colonne,couleurPion))) {
             grille.get(ligne).get(colonne).couleur = couleurPion;
-
+            return "Position valide !";
         } else {
-            System.out.println("Position invalide !");
+           return "Position invalide !";
         }
     }
 
+    // permet de changer les pions adverses lors du jeu d'un coup
     public boolean changePionAdverse(int ligne, int colonne, Pion.COULEUR joueur) {
         Pion pion = grille.get(ligne).get(colonne);
         if (pion.couleur != Pion.COULEUR.neutre) {
@@ -105,8 +109,8 @@ public class Plateau {
 
     // permet de verifier si une position est valide pour un joueur (ligne, colonne)
     public boolean positionValide(int ligne, int colonne, Pion.COULEUR joueur) {
-        // Vérifiez d'abord si la case est déjà occupée.
-        if (grille.get(ligne).get(colonne).couleur != Pion.COULEUR.neutre) {
+        // verification si la case est deja occupee ou pas
+        if (ligne == -1 || colonne == -1 || grille.get(ligne).get(colonne).couleur != Pion.COULEUR.neutre) {
             return false; // La case est déjà occupée, le coup n'est pas valide.
         }
 
@@ -118,7 +122,7 @@ public class Plateau {
 
         boolean coupValideDansCetteDirection = false;
 
-        // Vérifiez dans toutes les directions si un coup est valide.
+        // verification dans toutes les directions si un coup est valide
         for (int i = 0; i < directionsLigne.length; i++) {
             int dirLigne = directionsLigne[i];
             int dirColonne = directionsColonne[i];
@@ -151,7 +155,7 @@ public class Plateau {
         return coupValideDansCetteDirection;
     }
 
-
+    // permet si c'est possible de jouer un coup pour un joueur
     public boolean estPossibleDeJouer(Pion.COULEUR couleur) {
         for (int ligne=0; ligne<grille.size(); ligne++) {
             for (int colonne=0; colonne<grille.get(0).size(); colonne++) {

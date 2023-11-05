@@ -1,5 +1,8 @@
+// ALMAJJO Alaaeddin & THIAM Pape
+
 public class Pion {
 
+    // les couleurs des pions
     enum COULEUR{
         noir,
         blanc,
