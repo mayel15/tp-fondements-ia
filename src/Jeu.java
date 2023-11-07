@@ -18,7 +18,7 @@ public class Jeu {
         this.joueurNoir = joueurNoir;
         this.joueurBlanc = joueurBlanc;
         // c'est le joueur noir qui commence
-        this.joueurActuel = joueurNoir;
+        this.joueurActuel = joueurBlanc;
         // c'est le IA noir qui commence
         this.iaActuel = botBlanc;
         this.iaNoir = botNoir;
@@ -72,7 +72,7 @@ public class Jeu {
             System.out.println(iaBlanc);
             System.out.println(iaNoir);
         }
-
+        long start = System.currentTimeMillis();
         while (true) {
             // affichage de la grille
             if(avecLog) System.out.println(plateau);
@@ -84,6 +84,10 @@ public class Jeu {
             // verification si le plateau est plein
             if (plateau.plateauEstPlein() || nbToursPasse == 2) {
                 //if (!(avecLog)) System.out.println(plateau);
+                long end = System.currentTimeMillis();
+                long time = end -start;
+                // pour afficher le temps d'un jeu
+                // if (avecLog) System.out.println("Temps (ms) : " + time);
                 return checkWin(avecLog);
             } else if (plateau.estPossibleDeJouer(joueurActuel.getCouleur())) {
                 iaActuel.jouerCoup(plateau, avecLog);
@@ -129,6 +133,8 @@ public class Jeu {
                                     iaNoir.setAlgo(algo2);
                                     iaNoir.setStrategie(strategie2);
                                     iaNoir.setNombreCoupJoues(0);
+
+                                    iaActuel = iaBlanc;
 
                                     Pion.COULEUR gagnant = this.IAvsIA(false);
                                     if (gagnant == Pion.COULEUR.blanc) {
